@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>video And Colors</title>
+  <script>
+    window.MathJax = {
+      MathML: { extensions: ["mml3.js", "content-mathml.js"] },
+    };
+  </script>
+  <script
+    type="text/javascript"
+    async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"
+  ></script>
+  <style>
+    figcaption{
+      background-color: rgb(238, 237, 236);
+      width: 400px;
+    }
+    #vidDuration{
+      /* display: block; */
+      width: 75%;
+    }
+    #fullScreen{
+      font-size: 18px;
+      /* padding: 1px; */
+    }
+    [data-my-color]{
+      color: rgb(255, 0, 149);
+    }
+  </style>
+</head>
+<body>
+  <h2>Frozen Teaser</h2>
+  <figure>
+    <video src="./video/frozen.mp4" width="400px" id="vidFrozen" poster="./image/frozen.jpg">
+      Your browser does not support the video tag.
+    </video>
+    <br>
+    <figcaption>
+      <input type="range" name="vidDuration" id="vidDuration"
+        min="0" max="vid.duration" value="0" onchange="timelinePicker()">
+      <span id="durationCurrTotal"></span>
+      <button id="vidPlayPause" onclick="playVid()">Play</button>
+      <button id="vidStop" onclick="stopVid()">Stop</button>
+      <button id="toStart" onclick="goToStart()"><<</button>
+      <button id="back" onclick="goBack()"><</button>
+      <button id="forward" onclick="goForward()">></button>
+      <button id="toEnd" onclick="goToEnd()">>></button>
+      <input type="range" name="vidRange" id="vidRange" 
+        min="0" max="1"
+        step="0.1" value="0.5" onchange="volumeVid()">
+      <button id="muteVid" onclick="muteVid()">Mute</button>
+      <button id="fullScreen" onclick="fullScreen()"><strong>&#9974;</strong></button>
+    </figcaption>
+    </figure>
+  <hr>
+  
+  <h2>Colors Range Text</h2>
+  <form>
+    Red:  &nbsp &nbsp<input type="range" class="red" id="red"
+      min="0" max="255" step="1" value="0" onchange="coloring()"> <br>
+    Green: <input type="range" class="green" id="green"
+     min="0" max="255" step="1" value="0" onchange="coloring()"> <br>
+    Blue:  &nbsp <input type="range" class="blue" id="blue"
+     min="0" max="255" step="1" value="0" onchange="coloring()"> <br>
+  </form>
+  <p data-my-color="g" id="textColor"><strong>The 3 color ranges above and observw the color change</strong></p>
+  <hr>
+
+  <h2>Pythagoras Theorem</h2>
+  <hr>
+  <svg width="120" height="180">
+    <polygon points="90,0 0,160 90,160" style="fill:red; stroke: black"/>
+    <text x="45" y="175">a</text>
+    <text x="95" y="90">b</text>
+    <text x="30" y="80">c</text>
+  </svg>
+  <h3>according to pythagoras theorem</h3>
+  <math display="block" style="color: red; font-size: 18px">
+    <mrow>
+      <mi>c</mi>
+      <mo>=</mo>
+      <msqrt>
+        <msup>
+          <mn>a</mn>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <msup>
+          <mi>b</mi>
+          <mn>2</mn>
+        </msup>
+      </msqrt>
+    </mrow>
+  </math>
+  <hr>
+
+  <h2>Line Animation</h2>
+  <p id="lineDrawing" onclick="drawLine()">Click me</p> 
+  <canvas id="canv" width="400" height="400" style="border: 2px solid red;">
+  </canvas>
+  <script>
+
+    // Part1 task1:
+
+    var vid = document.getElementById("vidFrozen");
+    var durationCurrTotal = document.getElementById("durationCurrTotal");
+    var vidDuration = document.getElementById("vidDuration");
+
+    vid.ontimeupdate = function(){
+      // document.getElementById("durationCurrTotal").innerHTML = convertTime(vid.currentTime) + " / " + convertTime(vid.duration);
+      durationCurrTotal.innerHTML = convertTime(vid.currentTime) + " / " + convertTime(vid.duration);
+      vidDuration.value = vid.currentTime;
+      // console.log(vid.currentTime);
+    }
+    function timelinePicker(){  // I have to click twice to enable this func.
+      vid.currentTime = vidDuration.value;
+    }
+
+    function convertTime(time){
+      var min = Math.floor(time / (60));
+      var sec = Math.floor(time % (60));
+      // return nf(min, 2) + ":" + nf(sec, 2);
+      return min + ':' + sec;
+    }
+
+    function playVid(){
+      vid.play();
+      // if(vid.paused){
+      //   vid.play();
+      // }else{
+      //   vid.pause();
+      // }
+    }
+    function stopVid(){
+      vid.pause();
+    }
+    
+    function goToStart(){
+      vid.currentTime = 0;
+      vid.play();
+    }
+    function goBack(){
+      vid.currentTime -= 5;
+    }
+    function goForward(){
+      vid.currentTime += 5;
+    }
+    function goToEnd(){
+      vid.currentTime = vid.duration;
+      vid.load();
+    }
+
+    function volumeVid(){
+      vid.muted = false;
+      var rangeValue = document.getElementById("vidRange");
+      // vid.volume = (rangeValue.value) / 100;
+      vid.volume = rangeValue.value;
+      // console.log(vid.volume);
+    }
+    function muteVid(){
+      if(vid.muted == false){
+        vid.muted = true;
+      }else{
+        vid.muted = false;
+      }
+    }
+
+    // function fullScreen(){  // I have to catch the vid and make figcaption appearable and extendable too
+    //   vid.style.scale = 2;
+    // }
+
+    // ========================================
+
+    // Part1 task2:
+    function coloring() {
+      var r = document.getElementById("red").value;
+      var g = document.getElementById("green").value;
+      var b = document.getElementById("blue").value;
+      // document.querySelector("[data-my-color]").onclick = function(){
+      //   this.style.color = `rgb(${r}, ${g}, ${b})`;
+      // }
+      var colorValue = `rgb(${r}, ${g}, ${b})`;
+      var textColoring = document.getElementById("textColor");
+      textColoring.style.color = colorValue;
+    }
+    // // The below are correct, and also the onchange() above is ,too.
+    // document.getElementById("red").addEventListener('input', coloring);
+    // document.getElementById("green").addEventListener('input', coloring);
+    // document.getElementById("blue").addEventListener('input', coloring);
+
+    // ========================================
+
+    // Part2 task3:
+  
+    var canv = document.getElementById("canv");
+    var c = canv.getContext("2d");
+
+    var startX = 0;
+    var startY = 0;
+    var endX = 400;
+    var endY = 400;
+    var amount = 0;
+
+    var done = true;
+    var time = 50;
+    if (time < 50){  
+      done = false;
+    }
+
+    function drawLine(){
+      setInterval(function() {
+        diagonalLine();
+        horizontalLines();
+        verticalLines();
+        // done = true;
+      }, time);
+      
+      if(time != 50){
+        return;
+      }else if(time = 50){
+        alert("Animation Will Begin!");
+      }
+      // alert("Animation Done!");  // problem solved somehow
+      setTimeout(() => {
+        alert("Animation Done!");
+      }, 1000)
+    }
+
+    function diagonalLine(){
+      amount += 0.005;
+      if (amount > 1) amount = 1;
+      c.beginPath();
+      c.strokeStyle = "black";
+      c.moveTo(startX, startY);
+      // lerp : a  + (b - a) * f
+      c.lineTo(startX + (endX - startX) * amount, 
+              startY + (endY - startY) * amount);
+      c.stroke();
+      c.closePath();
+    }
+    
+    function horizontalLines(){
+      for (let i = 0; i < endY; i += 50) {
+        const y = i;
+        amount += 0.005;
+        if (amount > 1) amount = 1;
+        c.beginPath();
+        c.strokeStyle = "blue";
+        c.moveTo(startX, y);
+        c.lineTo(endX * amount, y);
+        c.stroke();
+        c.closePath();
+      }
+    }
+    function verticalLines(){
+      for (let i = 0; i < endX; i += 50) {
+        const x = i;
+        amount += 0.005;
+        if (amount > 1) amount = 1;
+        c.beginPath();
+        c.strokeStyle = "blue";
+        c.moveTo(x, startY);
+        c.lineTo(x, endY * amount);
+        c.stroke();
+        c.closePath();
+      }
+    }
+    
+    // const arr = [0, 50, 100, 150, 200, 250, 300, 350, 400];
+    // function horizontalLines(){
+    //   for (let i = 1; i < arr.length-1; i++) {
+    //     const y = arr[i];
+    //     amount += 0.05;
+    //     if (amount > 1) amount = 1;
+    //     c.beginPath();
+    //     c.strokeStyle = "green";
+    //     c.moveTo(startX, y);
+    //     c.lineTo(endX * amount, y);
+    //     c.stroke();
+    //     c.closePath();
+    //   }
+    // }
+    // function verticalLines(){
+    //   for (let i = 1; i < arr.length-1; i++) {
+    //     const x = arr[i];
+    //     amount += 0.05;
+    //     if (amount > 1) amount = 1;
+    //     c.beginPath();
+    //     c.strokeStyle = "blue";
+    //     c.moveTo(x, startY);
+    //     c.lineTo(x, endY * amount);
+    //     c.stroke();
+    //     c.closePath();
+    //   }
+    // }
+
+      // It worked but for single lines
+      // c.beginPath();
+      // c.strokeStyle = "black";
+      // c.moveTo(0, 50);
+      // c.lineTo(400 * amount, 50);
+      // c.stroke();
+      // c.closePath();
+
+      // c.beginPath();
+      // c.strokeStyle = "black";
+      // c.moveTo(50, 0);
+      // c.lineTo(50, 400 * amount);
+      // c.stroke();
+      // c.closePath();
+
+//     function horizontalLines(){
+//       amount += 0.05;
+//       if (amount > 1) amount = 1;
+//       for (let i = 0; i < endY.length; index += 50) {
+//         const x = endY[i];
+//         amount += 0.05;
+//         if (amount > 1) amount = 1;
+//         c.beginPath();
+//         c.strokeStyle = "blue";
+//         c.moveTo(x, startY);
+//         c.lineTo(x, startY + (endY - startY) * amount);
+//         c.stroke();
+//         c.closePath();
+//       }
+//     }
+//     function verticalLines(){
+//       amount += 0.05;
+//       if (amount > 1) amount = 1;
+//       for (let i = 0; i < endx.length; index += 50) {
+//         const y = endx[i];
+//         amount += 0.05;
+//         if (amount > 1) amount = 1;
+//         c.beginPath();
+//         c.strokeStyle = "blue";
+//         c.moveTo(startX, y);
+//         c.lineTo(startX + (endX - startX) * amount, y);
+//         c.stroke();
+//         c.closePath();
+//       }
+//     }
+
+    // var amount = 0;
+    // function drawLine(){
+    //   setInterval(function(){
+    //     amount += 0.05;
+    //     if(amount > 1) amount = 1;
+    //     c.beginPath();
+    //     c.strokeStyle = "blue";
+    //     c.moveTo(0, 0);
+    //     c.lineTo(400, 400);
+    //     c.stroke();
+    //     c.closePath();
+    //   }, 100);
+    // }
+
+    // ctx.beginPath();
+    // ctx.moveTo(0, 0);
+    // ctx.lineTo(400, 400);
+    // ctx.strokeStyle = "blue";
+    // ctx.lineWidth = 5;
+    // ctx.stroke();
+    // ctx.closePath();
+    
+    // var points = Math.sqrt(Math.pow(400, 2) + Math.pow(400, 2));
+    // function drawLine(){
+    //   c.beginPath();
+    //   for(let i = 0; i < points.length; i++){
+    //     let p1 = points[i];
+    //     let p2 = points[i+1];
+    //     // c.moveTo(p1.x, p1.y);
+    //     // c.lineTo(p2.x, p2.y);
+    //     c.moveTo(p1, p1);
+    //     c.lineTo(p2, p2);
+    //   }
+    //   c.strokeStyle = "blue";
+    //   c.lineWidth = 5;
+    //   c.stroke();
+    //   c.closePath();
+    // }
+  </script>
+</body>
+</html>

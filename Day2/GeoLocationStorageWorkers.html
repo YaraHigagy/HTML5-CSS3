@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h2>GeoLocation</h2>
+  <button onclick="getLocation()">Detect My Location</button>
+  <hr>
+  <h2>Web Storage</h2>
+  <input type="text" id="txt1">
+  <input type="text" id="txt2">
+  <input type="button" value="Submit" id="btn"> 
+  <hr>
+  <h2>Web Worker</h2>
+  <button id="sum">Sum</button>
+  <button id="bg">Bg Change</button>
+  <script>
+    // GeoLocation
+    function getLocation(){
+      navigator.geolocation.getCurrentPosition(showPosition, showError, Options);
+    }
+    function showPosition(e){  // e refers to the returned object from this func.
+      console.log(e);  // this line shows the location coords in console, using e as a container for these data
+      console.log(e.coords.latitude);
+      console.log(e.coords.longitude);
+      var lat = e.coords.latitude;  // storing that data for the next step
+      var long = e.coords.longitude;  // storing that data for the next step
+      location.assign("http://maps.google.com/maps?q=" + lat + ",+" + long);
+    }
+    function showError(x){  // x refers to the object that returns one of the geoLocation error codes witch are 4 cases
+      switch(x.code){
+        case 0:
+          console.log(x.message);
+          break;
+        case 1:
+          console.log(x.message);
+          break;
+        case 2:
+          console.log(x.message);
+          break;
+        case 3:
+          console.log(x.message);
+          break;
+      }
+    }
+    var Options = {
+      timeout: 0
+    };
+
+    // =======================================
+
+    // Web Storage
+    var btn = document.getElementById("btn");
+    btn.addEventListener("click", function(){
+      var name = document.getElementById("txt1").value;
+      var addr = document.getElementById("txt2").value;
+      localStorage.setItem("name", name);
+      sessionStorage.setItem("addr", addr);
+      console.log(localStorage);
+      console.log(sessionStorage);
+      console.log(localStorage.getItem("name"));
+      console.log("The address is: " + sessionStorage.getItem("addr"));
+    });
+
+    // =======================================
+
+    // Web Worker
+    var worker = new Worker("worker.js");
+    var sum = document.getElementById("sum");
+    var bg = document.getElementById("bg");
+    sum.onclick = function(){
+      worker.postMessage("");
+    }
+    worker.onmessage = function(message){
+      console.log(message);
+      alert(message.data);
+    }
+
+    bg.onclick = function(){
+      if(document.body.style.backgroundColor !== "green"){
+        document.body.style.backgroundColor = "green";
+      }else{
+        document.body.style.backgroundColor = "blue";
+      }
+    }
+  </script>
+</body>
+</html>
